@@ -56,7 +56,7 @@ for page_num in range(1, 86):
         break
 
 print(f"Total offres récupérées : {len(all_offers)}")
-
+#csv
 with open('meteojob_offres.csv', 'w', newline='', encoding='utf-8') as f:
     writer = csv.DictWriter(f, fieldnames=['Titre', 'Entreprise', 'Lieu', 'Contrat', 'Salaire'])
     writer.writeheader()
