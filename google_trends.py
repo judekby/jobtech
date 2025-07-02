@@ -42,6 +42,16 @@ if results:
     final_df = pd.concat(results)
     final_df = final_df[['date', 'interest', 'keyword', 'country', 'isPartial']]
     final_df.to_csv('data/google_trends_data.csv', index=False)
+    
+    df = final_df[final_df['isPartial'] == False]
+    mean_interest = df.groupby(['country', 'keyword'])['interest'].mean().reset_index()
+    idx = mean_interest.groupby('country')['interest'].idxmax()
+    top_languages = mean_interest.loc[idx].reset_index(drop=True)
+    top_languages.to_csv('data/languagePopulaireParPays_data.csv', index=False)
+
     print(" Données enregistrées dans 'google_trends_data.csv'")
 else:
     print("Aucune donnée récupérée.")
+    
+    
+    
