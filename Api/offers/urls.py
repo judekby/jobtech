@@ -1,0 +1,50 @@
+from django.urls import path
+from .views import (
+    JobOfferList,
+    OffersPerCountryMeteojobList,
+    OffersPerContractList,
+    SalaryMeanPerContractList,
+    TopCompaniesList,
+    SalaryMeanTopCompaniesList,
+    JobteaserOfferList,
+    OffersPerCountryJobteaserList,
+    OffersPerContractCategoryList,
+    TopCitiesPerCountryList,
+    JobListView,
+    AggJobsByCompanyListView,
+    AggJobsByDateListView,
+    AggJobsByRemoteListView,
+    AggJobsByKeywordListView,
+    TopLanguageByCountryListView,
+    AggByCountryListView,
+    AggByRemoteListView,
+    TopLanguageListView,
+)
+from .views import JobOfferCleanListView, JobAggregationListView
+from rest_framework.authtoken.views import obtain_auth_token
+
+urlpatterns = [
+    path('api/job_offers/', JobOfferList.as_view(), name='joboffer-list'),
+    path('api/offers_per_country_meteojob/', OffersPerCountryMeteojobList.as_view(), name='offers_per_country_meteojob-list'),
+    path('api/offers_per_contract/', OffersPerContractList.as_view(), name='offers_per_contract-list'),
+    path('api/salary_mean_per_contract/', SalaryMeanPerContractList.as_view(), name='salary_mean_per_contract-list'),
+    path('api/top_companies/', TopCompaniesList.as_view(), name='top_companies-list'),
+    path('api/salary_mean_top_companies/', SalaryMeanTopCompaniesList.as_view(), name='salary_mean_top_companies-list'),
+    path('api/jobteaser_offers/', JobteaserOfferList.as_view(), name='jobteaser_offers-list'),
+    path('api/offers_per_country_jobteaser/', OffersPerCountryJobteaserList.as_view(), name='offers_per_country_jobteaser-list'),
+    path('api/offers_per_contract_category/', OffersPerContractCategoryList.as_view(), name='offers_per_contract_category-list'),
+    path('api/top_cities_per_country/', TopCitiesPerCountryList.as_view(), name='top_cities_per_country-list'),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('offers/', JobOfferCleanListView.as_view(), name='job-offers'),
+    path('aggregations/', JobAggregationListView.as_view(), name='job-aggregations'),
+    path('api/jobs/', JobListView.as_view(), name='jobs'),
+    path('api/agg_jobs_by_company/', AggJobsByCompanyListView.as_view(), name='agg_jobs_by_company'),
+    path('api/agg_jobs_by_date/', AggJobsByDateListView.as_view(), name='agg_jobs_by_date'),
+    path('api/agg_jobs_by_remote/', AggJobsByRemoteListView.as_view(), name='agg_jobs_by_remote'),
+    path('api/agg_jobs_by_keyword/', AggJobsByKeywordListView.as_view(), name='agg_jobs_by_keyword'),
+    path('api/top_language/', TopLanguageByCountryListView.as_view(), name='top_language_by_country'),
+    path('api/agg_by_country/', AggByCountryListView.as_view(), name='agg_by_country'),
+    path('api/agg_by_remote/', AggByRemoteListView.as_view(), name='agg_by_remote'),
+    path('api/top_languages/', TopLanguageListView.as_view(), name='top_languages'),
+
+]
