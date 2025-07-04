@@ -36,7 +36,7 @@ Ce projet automatise la collecte, le nettoyage et l’exportation de données pr
 
 ---
 
-## ⚙️ Prérequis
+## Prérequis
 
 - Python 3.x  
 - Firefox installé (pour Selenium)  
