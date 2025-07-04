@@ -4,12 +4,10 @@ import os
 import sqlalchemy
 from collections import Counter
 
-# === Chemins et paramètres ===
 CSV_PATH = "raw/survey_results_public.csv"
 HASH_PATH = "raw/.last_hash"
 DB_URI = "mysql+pymysql://root:taous@localhost:3306/gold"
 
-# === Liste des pays européens ===
 EUROPE_COUNTRIES = [
     "Albania", "Andorra", "Armenia", "Austria", "Azerbaijan", "Belarus", "Belgium", "Bosnia and Herzegovina",
     "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Georgia",
@@ -19,7 +17,6 @@ EUROPE_COUNTRIES = [
     "Switzerland", "Turkey", "Ukraine", "United Kingdom", "Vatican City"
 ]
 
-# === Fonctions utilitaires ===
 def compute_file_hash(file_path):
     hasher = hashlib.md5()
     with open(file_path, 'rb') as f:
@@ -40,23 +37,18 @@ def is_new_file(file_path):
 def table_exists(engine, table_name):
     return engine.dialect.has_table(engine.connect(), table_name)
 
-# === Chargement et nettoyage des données ===
 df = pd.read_csv(CSV_PATH, low_memory=False)
 
-# Garder les colonnes utiles
 df = df[["Country", "EdLevel", "YearsCodePro", "LanguageHaveWorkedWith", "RemoteWork"]].dropna()
 
-# Nettoyage des années d’expérience
 df["YearsCodePro"] = df["YearsCodePro"].replace({
     "Less than 1 year": "0",
     "More than 50 years": "51"
 })
 df["YearsCodePro"] = df["YearsCodePro"].astype(float)
 
-# Filtrer uniquement les pays européens
 df = df[df["Country"].isin(EUROPE_COUNTRIES)]
 
-# === Agrégation par pays européen ===
 agg_by_country = df.groupby("Country").agg({
     "YearsCodePro": "mean",
     "LanguageHaveWorkedWith": "count"
@@ -65,7 +57,6 @@ agg_by_country = df.groupby("Country").agg({
     "LanguageHaveWorkedWith": "ResponseCount"
 }).reset_index()
 
-# === Agrégation par type de RemoteWork ===
 agg_by_remote = df.groupby("RemoteWork").agg({
     "YearsCodePro": "mean",
     "LanguageHaveWorkedWith": "count"
@@ -74,7 +65,6 @@ agg_by_remote = df.groupby("RemoteWork").agg({
     "LanguageHaveWorkedWith": "ResponseCount"
 }).reset_index()
 
-# === Langages les plus utilisés (parmi pays européens) ===
 language_counter = Counter()
 for langs in df["LanguageHaveWorkedWith"]:
     for lang in langs.split(";"):
@@ -82,18 +72,15 @@ for langs in df["LanguageHaveWorkedWith"]:
 
 top_languages = pd.DataFrame(language_counter.most_common(), columns=["Language", "Count"])
 
-# === Connexion à la base de données ===
 engine = sqlalchemy.create_engine(DB_URI)
 first_time = not table_exists(engine, 'agg_by_country')
 
-# === Vérification de nouveauté ===
 if not is_new_file(CSV_PATH) and not first_time:
     print("Pas de nouvelles données. Arrêt du script.")
     exit()
 
-# === Insertion dans la base de données ===
 agg_by_country.to_sql("agg_by_country", engine, index=False, if_exists="replace")
 agg_by_remote.to_sql("agg_by_remote", engine, index=False, if_exists="replace")
 top_languages.to_sql("top_languages", engine, index=False, if_exists="replace")
 
-print("✅ Données insérées avec succès.")
+print("Données insérées avec succès.")
