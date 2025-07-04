@@ -1,0 +1,10 @@
+pandas
+numpy
+SQLAlchemy
+unidecode
+requests
+python-dotenv
+pytrends
+jobspy
+beautifulsoup4
+selenium
